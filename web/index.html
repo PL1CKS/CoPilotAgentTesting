@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -32,7 +32,7 @@
   <title>Flutter Web App</title>
   <link rel="manifest" href="manifest.json">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -87,8 +87,8 @@
   </style>
 </head>
 <body>
-  <div class="loading">
-    <div class="spinner"></div>
+  <div class="loading" role="status" aria-live="polite">
+    <div class="spinner" aria-label="Loading application"></div>
     <div class="loading-text">Loading Flutter Web App...</div>
   </div>
 
