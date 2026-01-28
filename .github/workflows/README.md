@@ -35,7 +35,14 @@ The workflow runs automatically on:
 ### Configuration
 
 #### Base Href
-The workflow builds with `--base-href "/CoPilotAgentTesting/"` to match the GitHub repository name. If deploying to a custom domain, this can be changed to `/`.
+The workflow dynamically builds with `--base-href "/${{ github.event.repository.name }}/"` which automatically uses the repository name. This makes the workflow portable across different repositories and forks without requiring manual updates.
+
+**For custom domains**: If deploying to a custom domain (not GitHub Pages), change this to `/` by modifying the build command:
+```yaml
+run: flutter build web --release --base-href "/"
+```
+
+**Important**: The base-href must match where the app will be hosted. GitHub Pages hosts at `/<repository-name>/`, so the dynamic variable ensures this is always correct even if the repository is renamed or forked.
 
 #### Flutter Version
 Currently set to Flutter 3.24.0 stable. Update in the workflow file if needed:
@@ -50,6 +57,9 @@ The workflow requires:
 - `pages: write` - To deploy to GitHub Pages
 - `id-token: write` - For GitHub Pages authentication
 
+### Concurrency
+The workflow uses concurrency control with group `pages-flutter-web-deploy` to prevent multiple deployments from running simultaneously while not blocking other workflows in the repository.
+
 ### Setup Requirements
 
 #### Enable GitHub Pages
@@ -63,10 +73,10 @@ The workflow will automatically deploy to GitHub Pages once enabled.
 ### Accessing the Deployed App
 After a successful deployment to main branch, the app will be available at:
 ```
-https://<username>.github.io/CoPilotAgentTesting/
+https://<username>.github.io/<repository-name>/
 ```
 
-Replace `<username>` with the GitHub username or organization name.
+Replace `<username>` with the GitHub username or organization name, and `<repository-name>` with the actual repository name. The workflow automatically configures the correct path.
 
 ### Monitoring
 - View workflow runs in the **Actions** tab
@@ -111,8 +121,10 @@ To skip tests during deployment (not recommended), remove:
 #### Custom Build Options
 Modify the build command to add more options:
 ```yaml
-run: flutter build web --release --base-href "/CoPilotAgentTesting/" --web-renderer canvaskit
+run: flutter build web --release --base-href "/${{ github.event.repository.name }}/" --web-renderer canvaskit
 ```
+
+Note: The `${{ github.event.repository.name }}` variable automatically uses the repository name, making the workflow portable.
 
 ### Best Practices
 - ✅ Keep tests passing before merging to main
